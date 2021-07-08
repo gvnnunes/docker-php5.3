@@ -28,16 +28,13 @@ RUN cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 
 RUN apt-get update && apt-get install -y php5 php5-cli php5-mysql php5-pgsql php5-gd php5-mcrypt php5-curl php-pear libsybdb5 freetds-common php5-sybase wget ca-certificates libsybdb5
 
-RUN echo "mssql.textlimit = 20971520" >> /etc/php5/cli/php.ini && \
-    echo "mssql.textsize = 20971520" >> /etc/php5/cli/php.ini && \
-    echo "date.timezone = America/Sao_Paulo" >> /etc/php5/cli/php.ini
-
 # Instalando e configurando o apache
 
-RUN apt-get update && apt-get install -y apache2
+RUN apt-get update && apt-get install -y apache2 openssl
 
-COPY default.conf /etc/apache2/sites-available/default
-
+RUN mkdir -p /var/run/apache2
+    
 RUN a2enmod rewrite
+RUN a2ensite default-ssl && a2enmod ssl
 
 CMD ["/usr/sbin/apachectl", "-D", "FOREGROUND"]
